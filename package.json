@@ -1,0 +1,20 @@
+{
+  "author": "Dominic Tarr <dominic.tarr@gmail.com> (http://bit.ly/dominictarr)",
+  "name": "assertions",
+  "description": "loads of useful assert functions in one package",
+  "version": "0.0.0",
+  "homepage": "https://github.com/dominictarr/assertions",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/dominictarr/assertions.git"
+  },
+  "main": "./assert.js",
+  "scripts": {
+    "test": "meta-test test/*.js"
+  },
+  "engines": {
+    "node": ">= 0.2.0"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
