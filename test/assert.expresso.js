@@ -86,6 +86,22 @@ var examples =
     pass : [ [{a:true}, 'a'], [[],'length',0], ['hello','length', 5], [{a:1}, 'a', assert.ok ], [{a:null}, 'a', function (actual){assert.equal(actual,null)} ] ]
   , fail : [ [{}, 'a'], [deleted_a, 'a'], [{a:undefined}, 'a'], ['hello','length', 7] ,[{a:false}, 'a', assert.ok]]
   }
+, lessThan: {
+    pass: [ [1, 2], [0, 1], [-1, 0] ]
+  , fail: [ [1, 0], [0, 0] ] 
+  }
+, greaterThan: {
+    pass: [ [1, 0] ] 
+  , fail: [ [1, 2], [0, 1], [-1, 0], [0, 0] ]
+  }
+, lessThanOrEqual: {
+    pass: [ [1, 2], [0, 1], [-1, 0], [0, 0] ]
+  , fail: [ [1, 0] ] 
+  }
+, greaterThanOrEqual: {
+    pass: [ [1, 0], [0, 0] ] 
+  , fail: [ [1, 2], [0, 1], [-1, 0] ]
+  }
 }
 
 exports ['check examples'] = function (){

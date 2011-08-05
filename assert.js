@@ -80,6 +80,22 @@ exports = module.exports = {
       assert.fail(a, e
       , message , 'like',arguments.callee)
   }
+, lessThan: function (actual,expected, message) {
+    if(!(actual < expected))
+      assert.fail(actual, expected, message, '<')
+  }
+, greaterThan: function (actual,expected, message) {
+    if(!(actual > expected))
+      assert.fail(actual, expected, message, '<')
+  }
+, lessThanOrEqual: function (actual,expected, message) {
+    if(!(actual <= expected))
+      assert.fail(actual, expected, message, '<')
+  }
+, greaterThanOrEqual: function (actual,expected, message) {
+    if(!(actual >= expected))
+      assert.fail(actual, expected, message, '<')
+  }
 }
 exports.__proto__ = assert
 
