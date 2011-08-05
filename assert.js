@@ -96,6 +96,23 @@ exports = module.exports = {
     if(!(actual >= expected))
       assert.fail(actual, expected, message, '<')
   }
+, between: function (actual, hi, lo, message) {
+    if (lo > hi) {
+      var tmp = hi; hi = lo; lo = tmp;
+    }
+    if(!(actual > lo && actual < hi))
+      assert.fail({min: lo, max: hi}, actual, message, 'between')
+  }
+, betweenOrEqual: function (actual, hi, lo, message) {
+    if (lo > hi) {
+      var tmp = hi; hi = lo; lo = tmp;
+    }
+    if(!(actual >= lo && actual <= hi))
+      assert.fail({min: lo, max: hi}, actual, message, 'betweenOrEqual')
+  }
+
+
+
 }
 exports.__proto__ = assert
 

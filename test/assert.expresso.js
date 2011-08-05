@@ -102,6 +102,14 @@ var examples =
     pass: [ [1, 0], [0, 0] ] 
   , fail: [ [1, 2], [0, 1], [-1, 0] ]
   }
+, between: {
+    pass: [ [1, 0, 2], [0, -1, 1] ] 
+  , fail: [ [1, 2, 3], [0, 0, 1], [-1, 0] ]
+  }
+, betweenOrEqual: {
+    pass: [ [1, 1, 2], [0, -1, 1], [0, 0, 0] ] 
+  , fail: [ [1, 2, 3], [0, 0.1, 1], [-1, 0] ]
+  }
 }
 
 exports ['check examples'] = function (){
