@@ -111,7 +111,11 @@ exports = module.exports = {
       assert.fail({min: lo, max: hi}, actual, message, 'betweenOrEqual')
   }
 
-
+, isValidDate: function (actual, message) {
+    var parsed = new Date(actual)
+    if('Invalid Date' == parsed)
+      assert.fail(parsed, actual, message, 'is a valid date')
+  }
 
 }
 exports.__proto__ = assert

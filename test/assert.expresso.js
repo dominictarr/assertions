@@ -110,6 +110,10 @@ var examples =
     pass: [ [1, 1, 2], [0, -1, 1], [0, 0, 0] ] 
   , fail: [ [1, 2, 3], [0, 0.1, 1], [-1, 0] ]
   }
+, isValidDate: {
+    pass: [ [new Date().toString()], [Date.now()], ['2009-06-29T11:11:55Z'] , [1], [null]] 
+  , fail: [ [{}], ['euthoeu'] ]
+  }
 }
 
 exports ['check examples'] = function (){
