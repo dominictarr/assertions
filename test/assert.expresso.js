@@ -114,6 +114,10 @@ var examples =
     pass: [ [new Date().toString()], [Date.now()], ['2009-06-29T11:11:55Z'] , [1], [null]] 
   , fail: [ [{}], ['euthoeu'] ]
   }
+, contains: {
+    pass: [ [[1,2,3], 1], [[1,2,3], 2], [['a', 'b', 'c'], 'c'], ['hello there' , 'hell']] 
+  , fail: [ [[], 1], ['euthoeu', 'x'] ]
+  }
 }
 
 exports ['check examples'] = function (){
