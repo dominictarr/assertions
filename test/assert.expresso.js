@@ -118,6 +118,10 @@ var examples =
     pass: [ [[1,2,3], 1], [[1,2,3], 2], [['a', 'b', 'c'], 'c'], ['hello there' , 'hell']] 
   , fail: [ [[], 1], ['euthoeu', 'x'] ]
   }
+, isArray: {
+    pass: [ [[]]] 
+  , fail: [ [{}], ['euthoeu'], [/ouoeu/], [42], [null], [true] ]
+  }
 }
 
 exports ['check examples'] = function (){

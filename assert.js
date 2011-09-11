@@ -13,6 +13,10 @@ exports = module.exports = {
     if(!(actual instanceof expected))
       assert.fail(actual,expected, message,'instanceof',arguments.callee)
   }
+, isArray: function (actual, message) {
+    if(!Array.isArray(actual))
+      assert.fail([], actual, message, 'isArray', arguments.callee)
+  }
 , primitive: function (actual,message){
     if('function' == typeof actual || 'object' == typeof actual) 
       assert.fail(actual, 'must be number, string, boolean, or undefined'
@@ -101,24 +105,24 @@ exports = module.exports = {
       var tmp = hi; hi = lo; lo = tmp;
     }
     if(!(actual > lo && actual < hi))
-      assert.fail({min: lo, max: hi}, actual, message, 'between')
+      assert.fail(actual, {min: lo, max: hi}, message, 'between')
   }
 , betweenOrEqual: function (actual, hi, lo, message) {
     if (lo > hi) {
       var tmp = hi; hi = lo; lo = tmp;
     }
     if(!(actual >= lo && actual <= hi))
-      assert.fail({min: lo, max: hi}, actual, message, 'betweenOrEqual')
+      assert.fail(actual, {min: lo, max: hi}, message, 'betweenOrEqual')
   }
 , isValidDate: function (actual, message) {
     var parsed = new Date(actual)
     if('Invalid Date' == parsed)
-      assert.fail(parsed, actual, message, 'is a valid date')
+      assert.fail(actual, parsed, message, 'is a valid date')
   }
 , contains: function (actual, expected, message) {
     var i = actual.indexOf(expected)
     if(-1 === i)
-      assert.fail(expected, actual, message, 'contains')
+      assert.fail(actual, expected, message, 'contains')
   }
 }
 exports.__proto__ = assert
