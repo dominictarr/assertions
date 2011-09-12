@@ -15,7 +15,7 @@ exports = module.exports = {
   }
 , isArray: function (actual, message) {
     if(!Array.isArray(actual))
-      assert.fail([], actual, message, 'isArray', arguments.callee)
+      assert.fail(actual, [], message, 'isArray', arguments.callee)
   }
 , primitive: function (actual,message){
     if('function' == typeof actual || 'object' == typeof actual) 
@@ -138,6 +138,9 @@ exports = module.exports = {
   }
 , isNull: function (actual, message) {
     exports.strictEqual(actual, null, message)
+  }
+, isEmpty: function (actual, message) {
+    exports.deepEqual(actual, [], message)
   }
 }
 

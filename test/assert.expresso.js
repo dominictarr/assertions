@@ -50,7 +50,6 @@ var examples =
     pass : [ [null]]
   , fail : [ ['true'], ['false'], [0], [1], [undefined], [true], [false] ]
   }
-  
 , isInstanceof : {
     pass : [ [{}, Object], [[], Object], [[], Array]
            , [new Error, Error], [function (){}, Function]]
@@ -140,8 +139,12 @@ var examples =
   , fail: [ [[], 1], ['euthoeu', 'x'] ]
   }
 , isArray: {
-    pass: [ [[]]] 
+    pass: [ [[]] ] 
   , fail: [ [{}], ['euthoeu'], [/ouoeu/], [42], [null], [true] ]
+  }
+, isEmpty: {
+    pass: [ [[]] ]
+  , fail: [ [ [1,2] ], [ 2 ], [true] ]
   }
 }
 
