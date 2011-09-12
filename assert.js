@@ -5,11 +5,11 @@ var assert = require('assert')
   , render = require('render')
 
 exports = module.exports = {
-  typeof: function (actual,expected,message){
+  isTypeof: function (actual,expected,message){
     if(expected !== typeof actual)
       assert.fail(actual, expected, (actual + ' typeof ' + expected),'typeof',arguments.callee)
   }
-, instanceof: function (actual,expected,message){
+, isInstanceof: function (actual,expected,message){
     if(!(actual instanceof expected))
       assert.fail(actual,expected, message,'instanceof',arguments.callee)
   }
@@ -27,7 +27,7 @@ exports = module.exports = {
       assert.fail(actual,'must be object or function' 
         , message,'complex',arguments.callee)
   }
-, function: function (actual,message){
+, isFunction: function (actual,message){
     if('function' !== typeof actual) 
       assert.fail('function',actual 
         , message,'should be a',arguments.callee)
@@ -124,7 +124,26 @@ exports = module.exports = {
     if(-1 === i)
       assert.fail(actual, expected, message, 'contains')
   }
+, isString: function (actual, message) {
+    exports.isTypeof(actual, 'string', message)
+  }
+, isNumber: function (actual, message) {
+    exports.isTypeof(actual, 'number', message)
+  }
+, isBoolean: function (actual, message) {
+    exports.isTypeof(actual, 'boolean', message)
+  }
+, isUndefined: function (actual, message) {
+    exports.isTypeof(actual, 'undefined', message)
+  }
+, isNull: function (actual, message) {
+    exports.strictEqual(actual, null, message)
+  }
 }
+
+exports.function = exports.ifFunction 
+exports.typeof = exports.isTypeof
+exports.instanceof = exports.isInstanceof
 exports.__proto__ = assert
 
 //man, prototypal inheritence is WAY better than classical!

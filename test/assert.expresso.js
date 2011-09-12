@@ -19,7 +19,7 @@ var examples =
   , fail : [ [0,1], [[],[]] ]
   }
   
-, typeof : {
+, isTypeof : {
     pass : [ [1, 'number']
            , [NaN, 'number']
            , ['', 'string']
@@ -29,7 +29,29 @@ var examples =
   , fail : [ [0, 'string'] ]
   }
   
-, instanceof : {
+, isString : {
+    pass : [ ['uoeaueu'] ]
+  , fail : [ [0], [/aoeuaoeu/], [{}], [[]], [true] ]
+  }
+
+, isNumber: {
+    pass : [ [10], [0], [-1], [NaN], [-1.7976931348623157E+1030], , [1.7976931348623157E+1030] ]
+  , fail : [ [/aoeuaoeu/], [{}], [[]], [true], [undefined] ]
+  }
+, isBoolean: {
+    pass : [ [true], [false]]
+  , fail : [ ['true'], ['false'], [0], [1], [null], [undefined] ]
+  }
+, isUndefined: {
+    pass : [ [undefined]]
+  , fail : [ ['true'], ['false'], [0], [1], [null], [true], [false] ]
+  }
+, isNull: {
+    pass : [ [null]]
+  , fail : [ ['true'], ['false'], [0], [1], [undefined], [true], [false] ]
+  }
+  
+, isInstanceof : {
     pass : [ [{}, Object], [[], Object], [[], Array]
            , [new Error, Error], [function (){}, Function]]
   , fail : [ [{}, Array] ]
@@ -54,12 +76,11 @@ var examples =
     pass : [ [1], [2], [3], ['sadgsdf'] [true], [false], [undefined] ]
   , fail : [ [null], [[]], [{}], [new Error], [function (){}] ]
   }
-
 , complex : {
     pass : [ [null], [[]], [{}], [new Error], [function (){}] ]
   , fail : [ [1], [2], [3], ['sadgsdf'] [true], [false], [undefined] ]
   }
-, function : {
+, isFunction : {
     pass : [ [function(){}], [/asdf/], [Error], [({}).constructor] ]
   , fail : [ [1], [2], [3], ['sadgsdf'] [true], [false], [undefined] ]
   }
