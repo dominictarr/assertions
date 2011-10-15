@@ -34,11 +34,11 @@ function property (actual, property, value, message){
     //if value is a function, assume it is an assertion... apply it to actual[property]
     if('function' == typeof value) {
       try { value(actual[property]) } catch (err) {
-        explain(err, 'property: ({actual:render}){path:path} must pass {assertion}')
+        explain(err, 'property: ({actual:render}){path:path} must pass {assertion:function}')
       }
     } else if (value != null) //else if value is exiting, check it's equal to actual[property]
       try { elementary.equal(actual[property], value) } catch (err) {
-        explain(err, 'property: ({actual:render}){path:path} must equal {assertion}')
+        explain(err, 'property: ({actual:render}){path:path} must equal {assertion:function}')
       }
       
     //if you want to assert a value is null or undefined,
@@ -68,7 +68,7 @@ function path (actual, expected, assertion, message) {
     assertion(current)
   } catch (err) {
     throw fail(err).explain(
-        'path: expected ({actual:render}){path:path} to pass {assertion}'
+        'path: expected ({actual:render}){path:path} to pass {assertion:function}'
       , { actual: actual
         , path: expected
         , assertion: assertion
@@ -79,13 +79,13 @@ function path (actual, expected, assertion, message) {
   return current
 }
 
-function apply (actual, assertion , message) {
+function apply (actual, assertion, message) {
   
   //catch and wrap in message
   try {
     assertion (actual)
   } catch (err) {
-    throw fail(err).explain('apply: {actual} did not pass {assertion}', {
+    throw fail(err).explain('apply: {actual:render} did not pass {assertion:function}', {
       actual: actual,
       expected: assertion,
       assertion: assertion 
@@ -106,7 +106,7 @@ function throws (actual, assertion, message) {
       return apply (err, assertion, message)
     } catch (f) {
       throw f.explain(
-          'throws: {actual} threw an exception that did not pass {assertion}'
+          'throws: {actual} threw an exception that did not pass {assertion:function}'
         , {actual: actual, assertion: assertion}
         , message
       )
@@ -117,6 +117,7 @@ function throws (actual, assertion, message) {
 }
 
 function every (array, assertion, message){
+
   try{
     extended.isArray(array)
   }catch(err){
@@ -127,7 +128,7 @@ function every (array, assertion, message){
       assertion.call(null,array[i])
     } catch (err) {
       throw fail(err).explain(
-          'every: every[{index}] (== {actual:render}) must pass {assertion}, \n  ({index} out of {every.length} have passed)'
+          'every: every[{index}] (== {actual:render}) must pass {assertion:function}, \n  ({index} out of {every.length} have passed)'
         , { index: i
           , every: array
           , assertion: assertion
@@ -213,7 +214,7 @@ function atIndex (actual, relativeIndex, assertion, message) {
   try {
     assertion(actual[index])
   } catch (err) {
-    explain(err, '({actual})[index] must pass {assertion}')
+    explain(err, '({actual:render})[{index}] must pass {assertion:function}')
   }
 }
 

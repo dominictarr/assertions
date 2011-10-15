@@ -1,38 +1,110 @@
-## Assertions
+# Assertions
 
-an extensive set of assertion functions,   
-with higher order functions to create reusable specs for both testing _and validation_.
+_assertions_ is a powerful assertion toolkit.  
 
-## basic functions 
+there are many useful assertion functions,  
+including a few _very useful_ higher order assertion functions.  
+also, every function has a _curry form and these can be joined together to create reusable specs.
 
-...
+##here I'll explain:
 
-## higher order functions
+assert that `bar` equals `foo`
 
-has, every, all, any, path, atIndex, property, notAny, notEvery, noop
+``` js
+var a = require('assertions')
 
-## curried functions _*
+a.equal(bar, foo)
+```
+create an assertion that anything equals `foo`
 
-all assertion functions also have a `_assertion` form,  
-that returns a `specification` function.  
-the _function takes the tail of the `assertion`'s arguments,  
-(everything except the actual, which is always first)  
+``` js
+var equalFoo = a._equal(foo)
 
-the specification function only takes one argument, `actual`.
-when a `specification` function is called, it executes the assertion.
+//apply it to some things...
+equalFoo (bar)
+equalFoo (baz)
+equalFoo (zuk)
+```
 
-this is very useful for passing to the higher order functions, which also have _function forms
+every function has a curry form with a leading "_",  
+it skips the first arg,  
+and returns an assertion function that you can pass the first arg to later!
 
-var _isValidRequest = 
-  _all(
-    _has({
-      headers: _isObject('must have headers!!!') // {} would mean the same thing here but this way we can add a message
-    }),
-    _ok()
-  )
-  
-then, you can apply validation to things!
+okay, so why? 
 
-  _isValidRequest(req)
-  
-  
+this starts to get super awesome when you have, example, the `has` assertion:
+
+``` js
+//assert that bar has a property letters: 3, and a name, which is a string.
+a.has(bar, {
+  letters: 3,
+, name: function (actual) { a.isString(actual, 'make it a string!') }
+})
+```
+
+`has` is kinda like `deepEqual` but only checks that the property matches if it's a primitive.  
+if the property is a function then `has` assumes that it is an assertion function,  
+and applys the function to the corisponding property the actual object.  
+
+this could be rewritten using the curry form:
+
+``` js
+//assert that bar has a property letters: 3, and a name, which is a string.
+var validTLA = a._has({
+  letters: 3,
+  name: a._isString('make it a string!')
+})
+```
+now we can check that every thing is a valid TLA, oh yeah, lets use the higher order assertion `every`
+
+``` js
+a.every([
+  {name: 'WTF', letters: 3},
+  {name: 'OMG', letters: 3},
+  {name: 'BBQ', letters: 3},
+  {name: 'TLA', letters: 3},
+  {name: 'DSL', letters: 3}
+], validTLA)
+```
+
+we can now use `validTLA` every where we need to check that something is a TLA, not just in our tests.
+
+## Error Messages
+one of the best things about assertions is that it creates very detailed error messages.
+
+``` js
+a.every([
+  {name: 'WTF', letters: 3},
+  {name: 'TLA', letters: 3},
+  {name: 'IMHO', letters: 4}
+  ], validTLA)
+```
+
+will give you a message like this, showing each step of where it went wrong!
+
+``` js
+equal: 4 == 3
+has: ({ name: "IMHO", letters: 4 }).letters must match { letters: 3, name: isString }).letters
+every: every[2] (== { name: "IMHO", letters: 4 }) must pass has, 
+  (2 out of 3 have passed)
+    at Object.equal (/home/dominic/source/dev/assertions/elementary.js:11:18)
+    at Object.leaf (/home/dominic/source/dev/assertions/higher.js:175:16)
+    ...
+```
+
+## assertion function conventions.
+
+this works because all of the assertions functions in `assertions` 
+follow a simple convention borrowed from nodejs's `assert` module.
+
+``` js
+assertion(actual [, expected...], message)
+```
+some times `expected` is not necessary, or is optional, 
+or may take multiple args.
+
+if the assertion takes optional args, the last arg is always message if it is a string.
+
+## message option
+
+all assertions take as optional message arg

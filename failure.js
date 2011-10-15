@@ -2,12 +2,24 @@
 var render = require('render')
   , fomatto = require('fomatto').Formatter({
       cf: render.cf, 
-      render: function (val) {return render(val)}, 
+      render: renderer, 
       JSON: JSON.stringify,
-      path: renderPath
+      path: renderPath,
+      'function': nameFunction 
     })
 
+function nameFunction (f) { 
+  if('function' !== typeof f) return f
+  return f.name || f._name || (f.toString().length < 100 ? f.toString() : f.toString().slice(0,97)+'...')
+}
 
+function renderer (o) {
+  return render(o, {
+    surround: function (val, p, def) {
+      return 'function' == typeof p.value ? nameFunction(p.value) : def(val, p)
+    }
+  })
+}
 /*
 generating error messages
 
@@ -69,7 +81,7 @@ function setup(e) {
 
   e.explaination = []
   e.explain = function (template, parts, message) {
-    e.explaination.unshift({
+    e.explaination.push({
       template: template,
       parts: parts,
       message: message
@@ -109,7 +121,7 @@ function fail(e) {
   else if (e && e.name == 'AssertionError') {
       var opts = {actual: e.actual , expected: e.expected, operator: e.operator}
         , m = e.message      
-      return setup(e).explain('AssertionError: {actual:JSON} {operator} {expected:JSON}', opts, m)
+      return setup(e).explain('AssertionError: {actual:render} must {operator} {expected:render}', opts, m)
     }
   else if (e instanceof Error) {
       var message = e.toString() || 'UNKNOWN ERROR'
@@ -120,7 +132,7 @@ function fail(e) {
     var a = e
     e = setup(new Error())
     if (arguments.length)
-      e.explain('thrown: {error:JSON} typeof {typeof}', {error: a, 'typeof': typeof a}, '')
+      e.explain('thrown: {error:render} (typeof {typeof})', {error: a, 'typeof': typeof a}, '')
   }
 
   return e
