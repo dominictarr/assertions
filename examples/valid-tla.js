@@ -5,7 +5,7 @@ var a = require('../')
 var validTLA = a._has({
   letters: 3,
   name: a._isString('make it a string!')
-})
+}, 'must be a real Three Letter Acronym')
 
 a.every([
   {name: 'WTF', letters: 3},

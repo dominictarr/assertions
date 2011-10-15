@@ -52,8 +52,8 @@ lets rewrite the above example using the curry form:
 //assert that bar has a property letters: 3, and a name, which is a string.
 var validTLA = a._has({
   letters: 3,
-  name: a._isString('make it a string!') //this is just the message
-})
+  name: a._isString('make it a string!')
+}, 'must be a real Three Letter Acronym')
 ```
 now we can check that every thing is a valid TLA, oh yeah, lets use the higher order assertion `every`
 
@@ -67,7 +67,7 @@ a.every([
 ], validTLA)
 ```
 
-we can now use `validTLA` every where we need to check that something is a TLA, not just in our tests.
+we can now use `validTLA` where ever we need to check that something is a TLA, not just in our tests.
 
 ## Error Messages
 one of the best things about assertions is that it creates very detailed error messages.
