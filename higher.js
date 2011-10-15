@@ -1,70 +1,164 @@
-var assert = require('assert')
-  , extended = require('./extended')
+var extended = require('./extended')
+  , elementary = require('./elementary')
   , traverser = require('traverser')
   , render = require('render')
+  , fail = require('./failure').fail
 
 module.exports = {
-  every: every,
-  has: has,
-  apply: apply
+  every:    every,
+  has:      has,
+  apply:    apply,
+  throws:   throws,
+  path:     path,
+  noop:     noop,
+  atIndex:  atIndex,
+  property: property 
+}
+function property (actual, property, value, message){
+
+    function explain(err, template) {
+      throw fail(err).explain(
+                'property:'+template
+              , { actual: actual
+                , property: property
+                , path: [property]
+                , assertion: value
+                }
+              , message 
+              )     
+    }
+
+    if(!actual[property] && value == null)
+    //checks that property is defined on actual, even if it is undefined (but not deleted)
+      explain(new Error(), 'property: {actual:render}{path:path} must exist')
+    //if value is a function, assume it is an assertion... apply it to actual[property]
+    if('function' == typeof value) {
+      try { value(actual[property]) } catch (err) {
+        explain(err, 'property: ({actual:render}){path:path} must pass {assertion}')
+      }
+    } else if (value != null) //else if value is exiting, check it's equal to actual[property]
+      try { elementary.equal(actual[property], value) } catch (err) {
+        explain(err, 'property: ({actual:render}){path:path} must equal {assertion}')
+      }
+      
+    //if you want to assert a value is null or undefined,
+    //use .property(name,it.equal(null|undefined))
+  }
+
+
+function path (actual, expected, assertion, message) {
+  var current = actual
+    , soFar = []
+  if('string' == typeof expected) expected = [expected] //allow a singe key as a string
+  if('function' != typeof assertion) message = assertion, assertion = noop
+
+  for ( var i in expected) {
+    var key = expected[i]
+    current = current[key]
+    soFar.push(key)
+    if(!(typeof current !== 'undefined')) // check if there actually is a property 
+      throw fail(new Error()).explain(
+          'path: ({actual:render}){soFar:path} must exist, (is undefined), expected path: {path:path}'
+        , { actual: actual, soFar: soFar, path:expected}
+        , message
+        )
+  }
+ 
+  try {
+    assertion(current)
+  } catch (err) {
+    throw fail(err).explain(
+        'path: expected ({actual:render}){path:path} to pass {assertion}'
+      , { actual: actual
+        , path: expected
+        , assertion: assertion
+        , current: current  }
+      , message 
+    )
+  }
+  return current
 }
 
-function apply (actual, assertion, message) {
+function apply (actual, assertion , message) {
   
   //catch and wrap in message
-  
-  assertion (actual)
+  try {
+    assertion (actual)
+  } catch (err) {
+    throw fail(err).explain('apply: {actual} did not pass {assertion}', {
+      actual: actual,
+      expected: assertion,
+      assertion: assertion 
+    }, message)
+  }
 
 }
 
-function every (array,func){
+function noop () {}
+
+function throws (actual, assertion, message) {
+  if('string' == typeof assertion) message = assertion, assertion= noop
+
+  try {
+    actual()
+  } catch (err) {
+    try {
+      return apply (err, assertion, message)
+    } catch (f) {
+      throw f.explain(
+          'throws: {actual} threw an exception that did not pass {assertion}'
+        , {actual: actual, assertion: assertion}
+        , message
+      )
+    }
+  }
+  throw fail().explain('throws: {actual} did not throw', {actual: actual, expected: assertion}, message)
+
+}
+
+function every (array, assertion, message){
   try{
-  assert.equal(typeof array,'object',"*is not an object*")
+    extended.isArray(array)
   }catch(err){
-    err.every = array
-    err.index = -1
-    throw err
+    throw fail(err).explain('every: {actual:render} must be an Array')
   }
   for(var i in array){
     try {
-      func.call(null,array[i])
+      assertion.call(null,array[i])
     } catch (err) {
-      if(!(err instanceof Error) || !err.stack){
-        var n = new Error("non error type '" + err + "' thrown as error.")
-        n.thrownValue = err
-        err = n
-      }
-      err.every = array
-      err.index = i
-      throw err
+      throw fail(err).explain(
+          'every: every[{index}] (== {actual:render}) must pass {assertion}, \n  ({index} out of {every.length} have passed)'
+        , { index: i
+          , every: array
+          , assertion: assertion
+          , actual: array[i]
+          }
+        , message
+        )
     }
   }
 }
 
-function has(obj,props) {
+function has(obj, props, message) {
   var pathTo = []
-  
-  //traverser has lots og functions, so it needs a longer stack trace.
+  //traverser has lots of functions, so it needs a longer stack trace.
   var orig = Error.stackTraceLimit 
   Error.stackTraceLimit = orig + 20
 
-  try{
-    assert.ok(obj,"it has no properties!")
-    assert.ok(props)
+  if('object' !== typeof props)
+    return extended.equal(obj, props)
 
-    traverser(props,{leaf:leaf, branch: branch})
+  try{
+    traverser(props, {leaf:leaf, branch: branch})
   } catch (err){
-      if(!(err instanceof Error) || !err.stack) {
-        var n = new Error("non error type '" + err + "' thrown as error.")
-        n.thrownValue = err
-        err = n
-      }
-      err.stack = 
-        "it/asserters.has intercepted error at path: " 
-          + renderPath(pathTo) + "\n" + err.stack
-      err.props = props
-      err.object = obj
-      err.path = pathTo
+      err = fail(err).explain(
+          'has: ({actual:render}){path:path} must match {expected:render}){path:path}'
+        , { actual: obj
+          , expected: props
+          , path: pathTo
+          }
+        , message
+        )
       Error.stackTraceLimit = orig
 
       throw err
@@ -77,7 +171,7 @@ function has(obj,props) {
     } 
     else {
     //since this is the leaf function, it cannot be an object.
-    assert.equal(other,p.value)
+    elementary.equal(other,p.value)
     }
   }
   function branch (p){
@@ -85,30 +179,50 @@ function has(obj,props) {
 
     var other = path(obj,p.path)
     if('function' !== typeof p.value)
-      extended.complex(other, 'expected that ' + JSON.stringify(other) + ' can have properties')
-//    if(other && 'object' != typeof 'object')
-//      assert.fail(other, null ,message," can have properties ",arguments.callee)
+      extended.complex(other)
     p.each()
   }
 }
 
-function path(obj,path,message){
-  var object = obj
-  for(i in path){
-    var key = path[i]
-    obj = obj[path[i]]
-    if(obj === undefined) 
-      assert.fail("expected " + render(object),renderPath(path),message,"hasPath",arguments.callee)
+function atIndex (actual, relativeIndex, assertion, message) {
+
+  var index = relativeIndex < 0 ? actual.length + relativeIndex : relativeIndex
+    , minLength = Math.abs(relativeIndex)
+    ;
+
+  function explain(err, template) {
+    throw fail(err).explain('atIndex: ' + template
+      , {actual: actual
+        , index: index
+        , relativeIndex: relativeIndex
+        , minLength: minLength
+        , assertion: assertion
+        }
+      , message)
   }
-  return obj
+
+  if(!(actual))
+    explain(new Error(), '{actual:render} must not be null')
+  if(!(actual.length))
+    explain(new Error(), '{actual:render} must have length property')
+  if(!(actual.length > minLength))
+    explain(new Error(), '{actual:render}.length (== {actual.length}) must be greater than {minLength}')
+
+  if(!('function' == typeof assertion))
+    message = assertion, assertion == noop
+  try {
+    assertion(actual[index])
+  } catch (err) {
+    explain(err, '({actual})[index] must pass {assertion}')
+  }
 }
 
-function renderPath(path){
-  return path.map(function (e){
-    if(!isNaN(e))
-      return '[' + e + ']'
-    if(/^\w+$/(e))
-      return '.' + e
-    return '[' + JSON.stringify(e) + ']' 
-  }).join('')
-}
+/*
+higher level assections that could be implemented:
+
+  * all(actual, assertions..., message)         //all assertions must pass
+  * any(actual, assertions..., message)         //at least one assertion must pass
+                                                //if index is negative, take index as length + index
+
+  refactor so that whereever it says 'assertion', if it's not a function : use equal.
+*/

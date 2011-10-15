@@ -1,57 +1,38 @@
 //asserters
 
-var assert = require('assert')
+var fail = require('./failure').fail
+  , elementary = require('./elementary')
 
 exports = module.exports = {
-  isTypeof: function (actual,expected,message){
+  isTypeof: function (actual, expected, message){
     if(expected !== typeof actual)
-      assert.fail(actual, expected, (actual + ' typeof ' + expected),'typeof',arguments.callee)
+      throw fail(new Error()).simple('isTypeOf', actual, expected, 'typeof')
   }
 , isInstanceof: function (actual,expected,message){
     if(!(actual instanceof expected))
-      assert.fail(actual,expected, message,'instanceof',arguments.callee)
+      throw fail(new Error()).simple('isInstanceof', actual, expected, 'instanceof')
   }
 , isArray: function (actual, message) {
     if(!Array.isArray(actual))
-      assert.fail(actual, [], message, 'isArray', arguments.callee)
+      throw fail(new Error()).explain('isArray: Array.isArray({actual})', {actual: actual})
   }
 , primitive: function (actual,message){
-    if('function' == typeof actual || 'object' == typeof actual) 
-      assert.fail(actual, 'must be number, string, boolean, or undefined'
-        , message,'primitive',arguments.callee)
+    if(!('function' !== typeof actual && 'object' !== typeof actual ))
+      throw fail(new Error()).explain('primitive: {actual:render} must not be a function or an object', {actual: actual})
   }
 , complex: function (actual,message){
-    if('function' !== typeof actual && 'object' !== typeof actual) 
-      assert.fail(actual,'must be object or function' 
-        , message,'complex',arguments.callee)
+    if(!('function' == typeof actual || 'object' == typeof actual ))
+      throw fail(new Error()).explain('complex: {actual:render} must be a function or an object', {actual: actual})
   }
 , isFunction: function (actual,message){
-    if('function' !== typeof actual) 
-      assert.fail('function',actual 
-        , message,'should be a',arguments.callee)
+    if(!('function' == typeof actual))
+      throw fail(new Error()).explain('isFunction: "function" == typeof {actual}', {actual: actual})
   }
-, property: function (actual,property,value,message){
-    if(!actual[property] && value == null)
-    //checks that property is defined on actual, even if it is undefined (but not deleted)
-      assert.fail(actual , property
-        , message,'must have property',arguments.callee)
-    //if value is a function, assume it is an assertion... apply it to actual[property]
-    if('function' == typeof value)
-      value(actual[property])
-    else if (value != null) //else if value is exiting, check it's equal to actual[property]
-      exports.equal(actual[property],value, message) 
-      
-    //if you want to assert a value is null or undefined,
-    //use .property(name,it.equal(null|undefined))
+, matches : function (input, pattern, message) {
+    if(!pattern.test(input))
+      throw fail(new Error()).simple('matches', input, pattern, 'must match', message)
   }
-, matches : function (input,pattern,message) {
-    if(!pattern(input))
-      assert.fail(input, pattern
-      , (message || '')  + "RegExp " +
-      + pattern + ' didn\'t match \'' + input+ '\' ' , 'matches',arguments.callee)
-  //JSON doesn't write functions, (i.e. regexps,). make a custom message
-  }
-, like: function (actual,expected,respect,message) {
+, like: function (actual, expected, respect, message) {
     respect = respect || {} 
     var op = 'like({' +
       [ respect.case ? 'case: true' : '' 
@@ -75,49 +56,48 @@ exports = module.exports = {
       e = e.replace(/\"|\'/g,'\"')
     }
 
-    if(a != e)
-      assert.fail(a, e
-      , message , 'like',arguments.callee)
+    if(! (a == e))
+      throw fail(new Error()).simple('like', a, e, 'must be like', message)
   }
-, lessThan: function (actual,expected, message) {
+, lessThan: function (actual, expected, message) {
     if(!(actual < expected))
-      assert.fail(actual, expected, message, '<')
+      throw fail(new Error()).simple('lessThan', actual, expected, '<', message)
   }
-, greaterThan: function (actual,expected, message) {
+, greaterThan: function (actual, expected, message) {
     if(!(actual > expected))
-      assert.fail(actual, expected, message, '<')
+      throw fail(new Error()).simple('greaterThan', actual, expected, '>', message)
   }
-, lessThanOrEqual: function (actual,expected, message) {
+, lessThanOrEqual: function (actual, expected, message) {
     if(!(actual <= expected))
-      assert.fail(actual, expected, message, '<')
+      throw fail(new Error()).simple('lessThanOrEqual', actual, expected, '<=', message)
   }
 , greaterThanOrEqual: function (actual,expected, message) {
     if(!(actual >= expected))
-      assert.fail(actual, expected, message, '<')
+      throw fail(new Error()).simple('greaterThanOrEqual', actual, expected, '>=', message)
   }
 , between: function (actual, hi, lo, message) {
     if (lo > hi) {
       var tmp = hi; hi = lo; lo = tmp;
     }
     if(!(actual > lo && actual < hi))
-      assert.fail(actual, {min: lo, max: hi}, message, 'between')
+      throw fail(new Error()).explain('between:{min} < {actual} < {max}', {actual: actual, min: lo, max: hi}, message)
   }
 , betweenOrEqual: function (actual, hi, lo, message) {
     if (lo > hi) {
       var tmp = hi; hi = lo; lo = tmp;
     }
     if(!(actual >= lo && actual <= hi))
-      assert.fail(actual, {min: lo, max: hi}, message, 'betweenOrEqual')
+      throw fail(new Error()).explain('betweenOrEqual:{min} <= {actual} <= {max}', {actual: actual, min: lo, max: hi}, message)
   }
 , isValidDate: function (actual, message) {
     var parsed = new Date(actual)
     if('Invalid Date' == parsed)
-      assert.fail(actual, parsed, message, 'is a valid date')
+      throw fail(new Error()).explain('isValidDate:{actual} must be valid date', {actual: actual, min: lo, max: hi}, message)
   }
 , contains: function (actual, expected, message) {
     var i = actual.indexOf(expected)
     if(-1 === i)
-      assert.fail(actual, expected, message, 'contains')
+      throw fail(new Error()).simple('contains', actual, expected, 'contains', message)
   }
 , isString: function (actual, message) {
     exports.isTypeof(actual, 'string', message)
@@ -132,18 +112,11 @@ exports = module.exports = {
     exports.isTypeof(actual, 'undefined', message)
   }
 , isNull: function (actual, message) {
-    exports.strictEqual(actual, null, message)
+    elementary.strictEqual(actual, null, message)
   }
 , isEmpty: function (actual, message) {
-    exports.deepEqual(actual, [], message)
+    elementary.deepEqual(actual, [], message)
   }
 }
 
-exports.function = exports.ifFunction 
-exports.typeof = exports.isTypeof
-exports.instanceof = exports.isInstanceof
-exports.__proto__ = assert
-
-//man, prototypal inheritence is WAY better than classical!
-//if only it supported multiple inheritence. that would be awesome.
 

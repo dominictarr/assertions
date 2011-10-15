@@ -1,8 +1,8 @@
 
 
-var extended  = require('./extended')
-  , assert    = require('assert')
-  , higher    = require('./higher')
+var extended    = require('./extended')
+  , elementary  = require('./elementary')
+  , higher      = require('./higher')
 
 function mixin (obj) {
   for(var key in obj) {
@@ -10,6 +10,22 @@ function mixin (obj) {
   }
 }
 
-mixin(assert)
+function curry (obj) {
+  for(var key in obj)
+    (function (key) {
+      exports['_'+key] = function curried () {
+        var args = [].slice.call(arguments)
+        return function (head) {
+          obj[key].apply(this, [head].concat(args))
+        }
+      }
+    })(key)
+}
+
+mixin(elementary)
 mixin(extended)
 mixin(higher)
+
+curry(elementary)
+curry(extended)
+curry(higher)
