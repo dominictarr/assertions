@@ -44,15 +44,15 @@ a.has(bar, {
 
 `has` is kinda like `deepEqual` but only checks that the property matches if it's a primitive.  
 if the property is a function then `has` assumes that it is an assertion function,  
-and applys the function to the corisponding property the actual object.  
+and applys the function to the corisponding property on the `actual` object.  
 
-this could be rewritten using the curry form:
+lets rewrite the above example using the curry form:
 
 ``` js
 //assert that bar has a property letters: 3, and a name, which is a string.
 var validTLA = a._has({
   letters: 3,
-  name: a._isString('make it a string!')
+  name: a._isString('make it a string!') //this is just the message
 })
 ```
 now we can check that every thing is a valid TLA, oh yeah, lets use the higher order assertion `every`
@@ -92,19 +92,11 @@ every: every[2] (== { name: "IMHO", letters: 4 }) must pass has,
     ...
 ```
 
-## assertion function conventions.
+## assertion(actual [, expected...], message)
 
-this works because all of the assertions functions in `assertions` 
-follow a simple convention borrowed from nodejs's `assert` module.
+that is the raw form of all assertions. this convention is borrowed from the nodejs `assert` module.
 
-``` js
-assertion(actual [, expected...], message)
-```
 some times `expected` is not necessary, or is optional, 
-or may take multiple args.
+or may take multiple args. see assertion docs.
 
-if the assertion takes optional args, the last arg is always message if it is a string.
-
-## message option
-
-all assertions take as optional message arg
+if the assertion takes optional args, the last arg is always `message` if it is a string.
