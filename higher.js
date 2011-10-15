@@ -76,7 +76,7 @@ function path (actual, expected, assertion, message) {
       , message 
     )
   }
-  return current
+    return current
 }
 
 function apply (actual, assertion, message) {
