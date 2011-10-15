@@ -80,7 +80,7 @@ var examples =
   , fail : [ [1], [2], [3], ['sadgsdf'] [true], [false], [undefined] ]
   }
 , isFunction : {
-    pass : [ [function(){}], [/asdf/], [Error], [({}).constructor] ]
+    pass : [ [function(){}], [Error], [({}).constructor] ]
   , fail : [ [1], [2], [3], ['sadgsdf'] [true], [false], [undefined] ]
   }
 , matches : {
