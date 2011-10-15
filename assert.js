@@ -50,7 +50,7 @@ exports = module.exports = {
 , every: every
 , throws: throws
 , matches : function (input,pattern,message) {
-    if(!pattern(input))
+    if(!pattern.test(input))
       assert.fail(input, pattern
       , (message || '')  + "RegExp " +
       + pattern + ' didn\'t match \'' + input+ '\' ' , 'matches',arguments.callee)
@@ -248,7 +248,7 @@ function renderPath(path){
   return path.map(function (e){
     if(!isNaN(e))
       return '[' + e + ']'
-    if(/^\w+$/(e))
+    if(/^\w+$/.test(e))
       return '.' + e
     return '[' + JSON.stringify(e) + ']' 
   }).join('')

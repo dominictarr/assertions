@@ -81,8 +81,8 @@ var examples =
   , fail : [ [1], [2], [3], ['sadgsdf'] [true], [false], [undefined] ]
   }
 , isFunction : {
-    pass : [ [function(){}], [/asdf/], [Error], [({}).constructor] ]
-  , fail : [ [1], [2], [3], ['sadgsdf'] [true], [false], [undefined] ]
+    pass : [ [function(){}], [Error], [({}).constructor] ]
+  , fail : [ [1], [2], [3], [/asdf/], ['sadgsdf'] [true], [false], [undefined] ]
   }
 , matches : {
     pass : [ ['hello', /\w+/] , ['asdgsadg', /[a|s|d|g]+/] ]
