@@ -154,6 +154,12 @@ exports['atIndex'] = function () {
 
 }
 
+exports['hasKeys'] = function () {
+
+  higher.hasKeys({a: 1, b: null, c: 'whatever'}, ['a','b','c'], 'must have a,b,c')
+  shouldFail(higher.hasKeys)({a: 1, b: null, c: 'whatever'}, ['a','b','c'], isNumber, 'must have numbers on a,b,c')
+}
+
 /*
   actual must pass all assections
 */

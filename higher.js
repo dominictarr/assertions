@@ -12,7 +12,8 @@ module.exports = {
   path:     path,
   noop:     noop,
   atIndex:  atIndex,
-  property: property 
+  property: property,
+  hasKeys:  hasKeys
 }
 function property (actual, property, value, message){
 
@@ -216,6 +217,28 @@ function atIndex (actual, relativeIndex, assertion, message) {
   } catch (err) {
     explain(err, '({actual:render})[{index}] must pass {assertion:function}')
   }
+}
+
+function hasKeys (actual, keys, assertion, message) {
+  if('string' == typeof assertion) message = assertion, assertion= noop
+  if(!assertion) assertion = noop
+  
+  function explain(err, template) {
+    throw fail(err).explain('hasKeys: ' + template, 
+      {actual: actual, key: key, path: [key], keys: keys, assertion: assertion}, 
+      message)  
+  }
+  
+  keys.forEach (function (key) {
+    if('undefined' == typeof actual[key])
+      explain(new Error(),'{actual:render} must have key: {key:JSON}')
+    try {
+      assertion (actual[key])
+    } catch (err) {
+      explain('hasKeys: ({actual:render}){path:path} must pass: {assertion:function}')
+    }
+  })
+
 }
 
 /*
