@@ -6,27 +6,27 @@ var fail = require('./failure').fail
 exports = module.exports = {
   isTypeof: function (actual, expected, message){
     if(expected !== typeof actual)
-      throw fail(new Error()).simple('isTypeOf', actual, expected, 'typeof')
+      throw fail(new Error()).simple('isTypeOf', actual, expected, 'typeof', message)
   }
 , isInstanceof: function (actual,expected,message){
     if(!(actual instanceof expected))
-      throw fail(new Error()).simple('isInstanceof', actual, expected, 'instanceof')
+      throw fail(new Error()).simple('isInstanceof', actual, expected, 'instanceof', message)
   }
 , isArray: function (actual, message) {
     if(!Array.isArray(actual))
-      throw fail(new Error()).explain('isArray: Array.isArray({actual})', {actual: actual})
+      throw fail(new Error()).explain('isArray: Array.isArray({actual:render})', {actual: actual}, message)
   }
 , primitive: function (actual,message){
     if(!('function' !== typeof actual && 'object' !== typeof actual ))
-      throw fail(new Error()).explain('primitive: {actual:render} must not be a function or an object', {actual: actual})
+      throw fail(new Error()).explain('primitive: {actual:render} must not be a function or an object', {actual: actual}, message)
   }
 , complex: function (actual,message){
     if(!('function' == typeof actual || 'object' == typeof actual ))
-      throw fail(new Error()).explain('complex: {actual:render} must be a function or an object', {actual: actual})
+      throw fail(new Error()).explain('complex: {actual:render} must be a function or an object', {actual: actual}, message)
   }
 , isFunction: function (actual,message){
     if(!('function' == typeof actual))
-      throw fail(new Error()).explain('isFunction: "function" == typeof {actual}', {actual: actual})
+      throw fail(new Error()).explain('isFunction: "function" == typeof {actual:render}', {actual: actual}, message)
   }
 , matches : function (input, pattern, message) {
     if(!pattern.test(input))
