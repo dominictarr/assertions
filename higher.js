@@ -58,7 +58,7 @@ function path (actual, expected, assertion, message) {
     current = current[key]
     soFar.push(key)
     if(!(typeof current !== 'undefined')) // check if there actually is a property 
-      throw fail(new Error()).explain(
+      throw fail (new Error()).explain(
           'path: ({actual:render}){soFar:path} must exist, (is undefined), expected path: {path:path}'
         , { actual: actual, soFar: soFar, path:expected}
         , message
