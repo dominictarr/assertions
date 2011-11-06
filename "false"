@@ -1,0 +1,7 @@
+HTTP/1.1 400 Bad Request
+Server: CouchDB/1.1.1 (Erlang OTP/R14B04)
+Date: Sun, 06 Nov 2011 05:17:52 GMT
+Content-Type: text/plain;charset=utf-8
+Content-Length: 65
+Cache-Control: must-revalidate
+

@@ -60,7 +60,7 @@ function renderPath(path){
   return path.map(function (e){
     if(!isNaN(e))
       return '[' + e + ']'
-    if(/^\w+$/(e))
+    if(/^\w+$/.test(e))
       return '.' + e
     return '[' + JSON.stringify(e) + ']' 
   }).join('')

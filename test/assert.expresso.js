@@ -138,6 +138,10 @@ var examples =
     pass: [ [[1,2,3], 1], [[1,2,3], 2], [['a', 'b', 'c'], 'c'], ['hello there' , 'hell']] 
   , fail: [ [[], 1], ['euthoeu', 'x'] ]
   }
+, includes: {
+    pass: [ [2, [1,2,3]], [3, [1,2,3]], ['c', ['a', 'b', 'c']], ['the', 'hello there']] 
+  , fail: [ [1, []], ['x', 'euthoeu'] ]
+  }
 , isArray: {
     pass: [ [[]] ] 
   , fail: [ [{}], ['euthoeu'], [/ouoeu/], [42], [null], [true] ]

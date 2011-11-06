@@ -57,21 +57,22 @@ exports ['pass it a primitive'] = function () {
   
 }
 
-exports [ 'integrate AssernionErrors (keep messages)'] = function () {
+exports [ 'integrate AssertionErrors (keep messages)'] = function () {
   var err = (function () { try { assert.ok(false, 'message is here') } catch (err) {return err} } )()
   var f = failure.fail(err)
 
   assert.equal(typeof f.explain, 'function')
-  assert.ok(~f.stack.indexOf('false == true'), 'should still have any preexisting error message')
+  assert.ok(~f.stack.indexOf('false must == true'), 'should still have any preexisting error message')
   assert.ok(~f.stack.indexOf('message is here'), 'should still have any preexisting error message')
 }
 
-exports [ 'integrate AssernionErrors add second explaination'] = function () {
+exports [ 'integrate AssertionErrors add second explaination'] = function () {
   var err = (function () { try { assert.ok(false, 'message is here') } catch (err) {return err} } )()
   var f = failure.fail(err).explain('adding another message!', {}, 'more message')
 
+  console.error(f.stack)
   assert.equal(typeof f.explain, 'function')
-  assert.ok(~f.stack.indexOf('false == true'), 'should still have any preexisting error message')
+  assert.ok(~f.stack.indexOf('false must == true'), 'should still have any preexisting error message')
   assert.ok(~f.stack.indexOf('message is here'), 'should still have any preexisting error message')
   assert.ok(~f.stack.indexOf('adding another message!'), 'should have 2nd message: "adding another message!"')
   assert.ok(~f.stack.indexOf('more message'), 'should have 2nd message: "more message"')

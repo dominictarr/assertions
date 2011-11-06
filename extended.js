@@ -24,7 +24,7 @@ exports = module.exports = {
     if(!('function' == typeof actual || 'object' == typeof actual ))
       throw fail(new Error()).explain('complex: {actual:render} must be a function or an object', {actual: actual}, message)
   }
-, isFunction: function (actual,message){
+, isFunction: function (actual, message){
     if(!('function' == typeof actual))
       throw fail(new Error()).explain('isFunction: "function" == typeof {actual:render}', {actual: actual}, message)
   }
@@ -98,6 +98,11 @@ exports = module.exports = {
     var i = actual.indexOf(expected)
     if(-1 === i)
       throw fail(new Error()).simple('contains', actual, expected, 'contains', message)
+  }
+, includes: function (actual, expected, message) {
+    var i = expected.indexOf(actual)
+    if(-1 === i)
+      throw fail(new Error()).simple('includes', actual, expected, 'includes', message)
   }
 , isString: function (actual, message) {
     exports.isTypeof(actual, 'string', message)
