@@ -148,7 +148,7 @@ function has(obj, props, message) {
   Error.stackTraceLimit = orig + 20
 
   if('object' !== typeof props)
-    return extended.equal(obj, props)
+    return elementary.equal(obj, props)
 
   try{
     traverser(props, {leaf:leaf, branch: branch})
