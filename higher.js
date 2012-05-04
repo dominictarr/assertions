@@ -99,7 +99,7 @@ function noop () {}
 
 function throws (actual, assertion, message) {
   if('string' == typeof assertion) message = assertion, assertion= noop
-
+  if(!assertion) assertion = noop
   try {
     actual()
   } catch (err) {
