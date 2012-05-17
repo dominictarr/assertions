@@ -124,4 +124,5 @@ exports = module.exports = {
   }
 }
 
+exports['typeof'] = exports.isTypeof
 
