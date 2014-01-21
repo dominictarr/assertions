@@ -16,10 +16,9 @@
     "node": ">= 0.2.0"
   },
   "dependencies": {
-    "fomatto" : "0.5",
-    "render"  : "0.1",
-    "traverser":"1"
+    "fomatto": "BonsaiDen/Fomatto#468666f600b46f9067e3da7200fd9df428923ea6",
+    "render": "0.1",
+    "traverser": "1"
   },
-  "bundleDependencies": ["fomatto"],
   "devDependencies": {}
 }
