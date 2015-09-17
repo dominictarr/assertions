@@ -100,3 +100,7 @@ some times `expected` is not necessary, or is optional,
 or may take multiple args. see assertion docs.
 
 if the assertion takes optional args, the last arg is always `message` if it is a string.
+
+## License
+
+MIT

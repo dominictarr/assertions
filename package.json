@@ -20,5 +20,6 @@
     "render": "0.1",
     "traverser": "1"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "license": "MIT"
 }
