@@ -2,7 +2,7 @@
   "author": "Dominic Tarr <dominic.tarr@gmail.com> (http://bit.ly/dominictarr)",
   "name": "assertions",
   "description": "loads of useful assert functions in one package",
-  "version": "2.3.3",
+  "version": "2.3.4",
   "homepage": "https://github.com/dominictarr/assertions",
   "repository": {
     "type": "git",
