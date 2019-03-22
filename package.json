@@ -8,7 +8,7 @@
     "type": "git",
     "url": "git://github.com/dominictarr/assertions.git"
   },
-  "main": "./assert.js",
+  "main": "./index.js",
   "scripts": {
     "test": "meta-test test/*.js"
   },
